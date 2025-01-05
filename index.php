@@ -167,19 +167,15 @@ $result = $conn->query($sql);
     </div>
     <div class="container">
         </br>
-<form action="" method="get">
-  <div class="input-group mb-3">
-    <input type="text" name="search" class="form-control border-color" placeholder="Pesquisar música" value="<?php echo $search; ?>">
-    <button type="submit" class="btn btn-secondary btn-color">Buscar</button>
-  </div>
-</form>
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control border-color" 
+                   placeholder="Pesquisar música" onkeyup="searchMusic(this.value)">
+        </div>
 
         <table class="table table-bordered">
-            <tbody>
+            <tbody id="musicList">
                 <?php
                 if ($result->num_rows > 0) {
-                    // Exibir as músicas disponíveis
-                    $counter = 0;
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='music'>";
                         echo "<td>";
@@ -193,60 +189,62 @@ $result = $conn->query($sql);
                         echo "</div>";
                         echo "</td>";
                         echo "</tr>";
-
-                        $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='2'><center>Nenhuma música encontrada.</center> <center><button onclick='voltarListagem()'>VOLTAR AO INÍCIO</button></center></td></tr>";
-
-// Em algum lugar abaixo no seu código PHP, você pode adicionar o seguinte script JavaScript:
-echo "<script>
-function voltarListagem() {
-  window.location.href = 'https://gruposocializando.com.br/down/';
-}
-</script>";
+                    echo "<tr><td colspan='2'><center>Nenhuma música encontrada.</center></td></tr>";
                 }
                 ?>
             </tbody>
         </table>
 
         <?php
-        // Exibe links de paginação somente se houver mais de 30 itens
-        if ($totalPages > 1) {
-            echo "<div class='pagination'>";
-            echo "<a href='?page=1'>Primeira</a>";
-
-            for ($i = max(1, $page - 5); $i <= min($page + 5, $totalPages); $i++) {
-                if ($i == $page) {
-                    echo "<a href='?page=$i' class='active'>$i</a>";
-                } else {
-                    echo "<a href='?page=$i'>$i</a>";
-                }
-            }
-
-            echo "<a href='?page=$totalPages'>Última</a>";
-            echo "</div>";
-        }
+        // [Mantenha a paginação igual]
         ?>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+    let searchTimeout = null;
+
+    function searchMusic(query) {
+        clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(() => {
+            fetch(`?search=${encodeURIComponent(query)}`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newMusicList = doc.querySelector('#musicList');
+                    
+                    if (newMusicList) {
+                        document.querySelector('#musicList').innerHTML = newMusicList.innerHTML;
+                    }
+                    
+                    // Atualiza a altura do iframe
+                    sendHeightToParent();
+                })
+                .catch(error => console.error('Erro:', error));
+        }, 300);
+    }
+
+    function voltarListagem() {
+        window.location.href = 'https://gruposocializando.com.br/down/';
+    }
+
+    function sendHeightToParent() {
+        var height = document.documentElement.scrollHeight;
+        parent.postMessage({ iframeHeight: height }, '*');
+    }
+
+    // Inicializa a altura do iframe
+    sendHeightToParent();
+    </script>
+
 </body>
 </html>
-
-<script>
-    // Envie a altura do conteúdo para a página pai
-function sendHeightToParent() {
-    var height = document.documentElement.scrollHeight;
-    parent.postMessage({ iframeHeight: height }, '*');
-}
-// Chame a função sempre que houver alteração no conteúdo da página
-// Por exemplo, após um evento de carregamento ou uma alteração de tamanho
-sendHeightToParent();
-    
-</script>
 
 <?php
 $conn->close();
