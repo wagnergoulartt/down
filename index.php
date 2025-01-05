@@ -1,11 +1,8 @@
 <html>
 <head>
     <meta name="robots" content="noindex">
-    <!-- Outras tags e metadados do cabeçalho -->
 </head>
 </html>
-
-
 
 <?php
 // Conexão com o banco de dados
@@ -43,7 +40,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $searchSql = !empty($search) ? "WHERE nome_musica LIKE '%$search%' OR nome_dj LIKE '%$search%'" : "WHERE 1=1";
 
 // Consulta para obter as músicas com limite, offset e busca
-$sql = "SELECT id, nome_musica, nome_dj, downloads 
+$sql = "SELECT id, nome_musica, nome_dj, downloads, destaque 
         FROM musicas $searchSql 
         ORDER BY destaque DESC, id DESC 
         LIMIT $limit OFFSET $offset";
@@ -72,7 +69,6 @@ $result = $conn->query($sql);
 
         .music {
             border-top: none;
-            
         }
 
         .texto {
@@ -122,49 +118,66 @@ $result = $conn->query($sql);
             background-color: #193461;
             color: #fff;
         }
+
         .dj-name {
             margin-bottom: 1px;
             margin-top: 5px;
             font-size: 10pt;
         }
+
         .download-icon {
             margin-bottom: 10px;
             font-size: 20pt;
-            
-            
+            color: #193461;
         }
-        
+
+        .download-icon:hover {
+            color: #495057;
+        }
+
         .textoo {
             padding-right: 10px;
         }
-        
-        .download-icon {
-      color: #193461; /* Cor padrão do ícone */
-    }
-    
-    .download-icon:hover {
-      color: #495057; /* Cor ao passar o mouse */
-    }
-    .btn-color {
-  background-color: #193461; /* Substitua #FF0000 pela cor desejada */
-  color: #FFFFFF; /* Substitua #FFFFFF pela cor do texto desejada */
-}
-.btn-color:hover {
-  background-color: #0000FF; /* Substitua #0000FF pela nova cor de fundo ao passar o mouse */
-  color: #FFFFFF; /* Substitua #FFFFFF pela nova cor do texto ao passar o mouse */
-}
-.border-color {
-  border-color: #193461; /* Substitua #FF0000 pela cor desejada para a borda */
-}
-.border-color:focus {
-  outline: none; /* Remove a sombra padrão ao selecionar o campo */
-  box-shadow: 0 0 5px #193461; /* Substitua #0000FF pela nova cor da sombra ao selecionar o campo */
-}
-   
+
+        .btn-color {
+            background-color: #193461;
+            color: #FFFFFF;
+        }
+
+        .btn-color:hover {
+            background-color: #0000FF;
+            color: #FFFFFF;
+        }
+
+        .border-color {
+            border-color: #193461;
+        }
+
+        .border-color:focus {
+            outline: none;
+            box-shadow: 0 0 5px #193461;
+        }
+
+        .music-destacada {
+            background-color: #e8f0fe !important;
+            border-left: 3px solid #193461 !important;
+        }
+
+        .table-bordered>:not(caption)>*>* {
+            border-width: 0;
+        }
+
+        .music.music-destacada {
+            background-color: #e8f0fe !important;
+            border-left: 3px solid #193461 !important;
+        }
+
+        .table>:not(caption)>*>* {
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
-    </div>
     <div class="container">
         </br>
         <div class="input-group mb-3">
@@ -177,7 +190,8 @@ $result = $conn->query($sql);
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr class='music'>";
+                        $destacadaClass = ($row["destaque"] == 1) ? 'music-destacada' : '';
+                        echo "<tr class='music {$destacadaClass}'>";
                         echo "<td>";
                         echo "<p class='texto music-name'>" . $row["nome_musica"] . "</p>";
                         echo "<p class='texto dj-name'>" . $row["nome_dj"] . "</p>";
@@ -196,10 +210,6 @@ $result = $conn->query($sql);
                 ?>
             </tbody>
         </table>
-
-        <?php
-        // [Mantenha a paginação igual]
-        ?>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
@@ -223,15 +233,10 @@ $result = $conn->query($sql);
                         document.querySelector('#musicList').innerHTML = newMusicList.innerHTML;
                     }
                     
-                    // Atualiza a altura do iframe
                     sendHeightToParent();
                 })
                 .catch(error => console.error('Erro:', error));
         }, 300);
-    }
-
-    function voltarListagem() {
-        window.location.href = 'https://gruposocializando.com.br/down/';
     }
 
     function sendHeightToParent() {
@@ -239,7 +244,6 @@ $result = $conn->query($sql);
         parent.postMessage({ iframeHeight: height }, '*');
     }
 
-    // Inicializa a altura do iframe
     sendHeightToParent();
     </script>
 
