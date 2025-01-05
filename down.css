@@ -1,0 +1,100 @@
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 1px;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .music {
+            border-top: none;
+        }
+
+        .texto {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        .music-name {
+            margin-bottom: -0.5em;
+            margin-top: 1px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .texto-download {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 10pt;
+        }
+
+        .texto-download p {
+            margin-left: 5px;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #eee;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #6c757d;
+            color: #fff;
+        }
+        .dj-name {
+            margin-bottom: 1px;
+            font-size: 10pt;
+        }
+        .download-icon {
+            margin-bottom: 10px;
+            font-size: 20pt;
+        }
+        
+        .textoo {
+            padding-right: 10px;
+            margin-bottom: 9px
+        }
+        
+        .download-icon {
+          color: #6c757d; /* Cor padrão do ícone */
+        }
+        
+        .download-icon:hover {
+          color: #495057; /* Cor ao passar o mouse */
+        }
+        .highlighted-song {
+            background-color: yellow;
+        }
+
+        .edit-icon,
+        .delete-icon {
+          margin-left: 5px;
+          color: #6c757d;
+          cursor: pointer;
+          font-size: 15pt;
+          margin-bottom: 10px
+        }
+
+        .edit-icon:hover,
+        .delete-icon:hover {
+          color: #495057;
+        }
